@@ -12,7 +12,7 @@
     },
     "autoload": {
         "psr-4": {
-            "FiveSay": "src/"
+            "FiveSay\\": "src/"
         }
     },
     "minimum-stability": "stable"
