@@ -1,0 +1,19 @@
+{
+    "name": "five-say/data-bag",
+    "description": "基于 session 的跨页面数据存储工具",
+    "keywords": ["data", "session"],
+    "authors": [
+        {
+            "name": "FiveSay",
+            "email": "bcw.5@foxmail.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+            "FiveSay": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
