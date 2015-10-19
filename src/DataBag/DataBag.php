@@ -4,8 +4,6 @@ class DataBag {
 
     /**
      * 存储于 session 中的 key
-        "jwage/purl": "~0.0.6"
-    
      */
     const SESSION_NAME = 'FiveSay\DataBag';
 
