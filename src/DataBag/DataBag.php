@@ -1,6 +1,6 @@
 <?php namespace FiveSay\DataBag;
 
-class Bag {
+class DataBag {
 
     const SESSION_NAME = 'FiveSay\DataBag';
 
