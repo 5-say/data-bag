@@ -11,7 +11,7 @@ class DataBag {
      * 允许保留的历史纪录数量
      * @var integer
      */
-    static private $historyNum = 5;
+    private static $historyNum = 5;
 
 
     /**
@@ -19,7 +19,7 @@ class DataBag {
      * @param  string $key session key
      * @return mixed
      */
-    static public function get($key)
+    public static function get($key)
     {
         return self::session($key);
     }
@@ -30,7 +30,7 @@ class DataBag {
      * @param mixed  $value session value
      * @return void
      */
-    static public function set($key, $value)
+    public static function set($key, $value)
     {
         self::session($key, $value);
         self::sessionHistory($key, $value);
@@ -42,7 +42,7 @@ class DataBag {
      * @param mixed  $value session value
      * @return mixed
      */
-    static public function all()
+    public static function all()
     {
         return self::session();
     }
@@ -52,7 +52,7 @@ class DataBag {
      * @param string $key   历史纪录 key
      * @return mixed
      */
-    static public function history($key = null)
+    public static function history($key = null)
     {
         return self::sessionHistory($key);
     }
@@ -62,7 +62,7 @@ class DataBag {
      * @param  integer $historyNum 历史纪录数
      * @return void
      */
-    static public function historyNum($historyNum)
+    public static function historyNum($historyNum)
     {
         return self::$historyNum = $historyNum;
     }
@@ -73,7 +73,7 @@ class DataBag {
      * @param mixed  $value session value
      * @return mixed
      */
-    static private function session($key = null, $value = null)
+    private static function session($key = null, $value = null)
     {
         if (is_null($key)) {
             return $_SESSION[self::SESSION_NAME];
@@ -92,7 +92,7 @@ class DataBag {
      * @param mixed  $value 历史纪录 value
      * @return mixed
      */
-    static private function sessionHistory($key = null, $value = null)
+    private static function sessionHistory($key = null, $value = null)
     {
         if (is_null($key)) {
             return $_SESSION[self::SESSION_NAME.'-history'];
@@ -101,22 +101,50 @@ class DataBag {
             return $_SESSION[self::SESSION_NAME.'-history'][$key];
         }
         else {
+            // 构造历史纪录
             $timestamp = time();
             $time      = date('Y-m-d H:i:s', $timestamp);
+            $url       = self::currentUrl();
             $data      = array(
                 'value'     => $value,
                 'time'      => $time,
                 'timestamp' => $timestamp,
+                'url'       => $url,
             );
 
+            // 存储历史纪录
+            isset($_SESSION[self::SESSION_NAME.'-history'][$key]) OR $_SESSION[self::SESSION_NAME.'-history'][$key] = array();
             array_unshift($_SESSION[self::SESSION_NAME.'-history'][$key], $data);
 
+            // 历史纪录数量限制
             $_SESSION[self::SESSION_NAME.'-history'][$key] = array_slice(
                 $_SESSION[self::SESSION_NAME.'-history'][$key],
                 0,
                 self::$historyNum
             );
         }
+    }
+
+    /**
+     * 获取当前 URL
+     * @return string
+     */
+    private static function currentUrl()
+    {
+        $protocol = (
+            ! empty($_SERVER['HTTPS'])
+            && $_SERVER['HTTPS'] !== 'off'
+            || $_SERVER['SERVER_PORT'] === 443
+        ) ? 'https://' : 'http://';
+
+        if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+            $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
+        }
+        else {
+            $host = $_SERVER['HTTP_HOST'];
+        }
+
+        return $protocol.$host.$_SERVER['REQUEST_URI'];
     }
 
 

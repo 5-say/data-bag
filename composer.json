@@ -8,9 +8,7 @@
             "email": "bcw.5@foxmail.com"
         }
     ],
-    "require": {
-        "jwage/purl": "^0.0.6"
-    },
+    "require": {},
     "autoload": {
         "psr-4": {
             "FiveSay\\": "src/"
