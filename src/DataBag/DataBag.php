@@ -8,10 +8,10 @@ class DataBag {
     const SESSION_NAME = 'FiveSay\DataBag';
 
     /**
-     * 允许保留的历史纪录数量
+     * 默认允许保留的历史纪录数量
      * @var integer
      */
-    private static $historyNum = 5;
+    const DEFAULT_HISTORY_NUM = 5;
 
 
     /**
@@ -58,13 +58,18 @@ class DataBag {
     }
 
     /**
-     * 设置历史纪录数
+     * 读取/设置 允许保留的历史纪录数量
      * @param  integer $historyNum 历史纪录数
-     * @return void
+     * @return mixed
      */
-    public static function historyNum($historyNum)
+    public static function historyNum($historyNum = null)
     {
-        return self::$historyNum = $historyNum;
+        if (is_null($historyNum)) {
+            return $_SESSION[self::SESSION_NAME.'-historyNum'] ?: self::DEFAULT_HISTORY_NUM;
+        }
+        else {
+            $_SESSION[self::SESSION_NAME.'-historyNum'] = $historyNum;
+        }
     }
 
     /**
@@ -120,7 +125,7 @@ class DataBag {
             $_SESSION[self::SESSION_NAME.'-history'][$key] = array_slice(
                 $_SESSION[self::SESSION_NAME.'-history'][$key],
                 0,
-                self::$historyNum
+                self::historyNum()
             );
         }
     }
@@ -129,7 +134,7 @@ class DataBag {
      * 获取当前 URL
      * @return string
      */
-    private static function currentUrl()
+    public static function currentUrl()
     {
         $protocol = (
             ! empty($_SERVER['HTTPS'])
